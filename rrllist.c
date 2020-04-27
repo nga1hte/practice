@@ -4,11 +4,13 @@
 typedef struct node{
     int data;
     struct node *next;
+    struct node *prev;
 }node;
 
 node *getNode(int data){
     node *newNode = (node *) malloc(sizeof(node));
     newNode->data = data;
+    newNode->next = NULL;
     newNode->next = NULL;
     return newNode;
 }
