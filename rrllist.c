@@ -41,10 +41,23 @@ void printList(node *start){
     printf("\n");
 }
 
+void recur_reverse(node **head, node *next){
+    if(next->next == NULL){
+        *head = next;
+        return;
+    }
+    recur_reverse(head, next->next);
+    node *temp = next->next;
+    temp->next = next;
+    next->next = NULL;
+}
+
 int main(){
     node *head = NULL;
     for(int i = 0; i < 5; ){
         insertAtHead(&head, ++i);
     }
+    printList(head);
+    recur_reverse(&head, head);
     printList(head);
 }
