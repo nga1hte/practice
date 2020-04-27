@@ -26,12 +26,18 @@ void insertAtTail(node **head, int data){
         temp = temp->next;
     }
     temp->next = newNode;
+    newNode->prev = temp;
 }
 
 void insertAtHead(node **head, int data){
     node *newNode = getNode(data);
     node *temp = *head;
-    newNode->next = *head;
+    if(*head == NULL){
+        *head = newNode;
+        return;
+    }
+    temp->prev = newNode;
+    newNode->next = temp;
     *head = newNode;
 }
 
@@ -43,10 +49,21 @@ void printList(node *start){
     printf("\n");
 }
 
+void printListR(node *start){
+    while(start->next != NULL){
+        start = start->next;
+    }
+    while(start != NULL){
+        printf("%d ", start->data);
+        start = start->prev;
+    }
+    printf("\n");
+}
+
 int main(){
     node *head = NULL;
     for(int i = 0; i < 5; ){
         insertAtHead(&head, ++i);
     }
-    printList(head);
+    printListR(head);
 }
