@@ -60,10 +60,48 @@ void printListR(node *start){
     printf("\n");
 }
 
+node *recur_reverse(node *current){
+
+    node *temp = current->next;
+    current->next = current->prev;
+    current->prev = temp;
+
+    if(current->prev == NULL)
+        return current;
+
+    return recur_reverse(current->prev);
+    
+}
+
+void recursionR(node **head, node *current){
+    node *temp = current->next;
+    current->next = current->prev;
+    current->prev = temp;
+    if(current->prev == NULL){
+        *head = current;
+        return;
+    }
+    recursionR(head, current->prev);
+}
+
+void reverse(node **head){
+    node *temp = NULL;
+    node *current = *head;
+    while(current != NULL){
+        temp = current->prev;
+        current->prev = current->next;
+        current->next = temp;
+        current = current->prev;
+    }
+    *head = temp->prev;
+}
+
 int main(){
     node *head = NULL;
     for(int i = 0; i < 5; ){
         insertAtHead(&head, ++i);
     }
-    printListR(head);
+    printList(head);
+    recursionR(&head, head);
+    printList(head);
 }
