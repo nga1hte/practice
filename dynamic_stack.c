@@ -42,6 +42,7 @@ void isEmpty(){
         printf("It is not empty\n");
 }
 
+
 int main(){
     isEmpty();
     Push(1);
