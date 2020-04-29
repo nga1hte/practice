@@ -3,95 +3,118 @@
 #include <string.h>
 
 typedef struct stack{
-    char data;
+    int data;
     struct stack *next;
 }stack;
 
 stack *Top = NULL;
 
 //Stack operations
-stack *getStack(char data);
-void push(char data);
-char pop();
-char top();
+stack *getStack(int data);
+void push(int data);
+int pop();
+int top();
 int isEmpty();
-
-int perform(char o, char a, char b);
+int perform(char o, int a, int b);
 void evaluatePostfix(char *str);
+int isOperator(char s);
+int isNumeric(char s);
 
 int main(){
-    char str[] = "2 2*2 2*+1+";
+    char str[100];
+    scanf("%s", str);
     evaluatePostfix(str);
-    printf("%c\n", top());
+    printf("%d\n", top());
     return 0;
 }
-int perform(char o, char a, char b){
+
+int isOperator(char s){
+    switch(s){
+        case '*':
+        case '/':
+        case '+':
+        case '-':
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+int isNumeric(char s){
+    if(s >= '0' && s <= '9') return 1; 
+    return 0;
+}
+
+
+int perform(char o, int a, int b){
     int result;
     switch(o){
         case '+':
-            result = (a - '0') + (b - '0');
+            result = a + b;
             break;
         case '*':
-            result = (a - '0') * (b - '0');
+            result = a * b;
             break;
         case '-':
-            result = (a - '0') - (b - '0');
+            result = a - b;
             break;
         case '/':
-            result = (a - '0') / (b - '0');
+            result = a / b;
             break;
+        default:
+            result = -1;
     }
     return result;
 }
 
 void evaluatePostfix(char *str){
     int len = strlen(str);
-    char op1, op2;
+    int op1, op2;
     int result;
     for(int i = 0; i < len; i++){
-        switch(str[i]){
-            case ' ':
-                continue;
-            case '*':
-            case '+':
-            case '-':
-            case '/':
+        if(str[i] == ' ' || str[i] == ',') continue;
+        else if(isOperator(str[i])){
                op2 = pop();
                op1 = pop();
                result = perform(str[i], op1, op2); 
-               push(result + '0');
-               break;
-            default:
-                push(str[i]);
+               push(result);
+        }else if(isNumeric(str[i])){
+               int operand = 0;
+               while(i < len && isNumeric(str[i])){
+                   operand = (operand * 10) + (str[i] - '0');
+                   i++;
+               }
+               i--;
+               push(operand);
         }
     }
 }
 
-stack *getStack(char data){
+stack *getStack(int data){
     stack *newStack = (stack *) malloc(sizeof(stack));
     newStack->data = data;
     newStack->next = NULL;
     return newStack;
 }
 
-void push(char data){
+void push(int data){
     stack *newStack = getStack(data);
     newStack->next = Top;
     Top = newStack;
 }
 
-char pop(){
+int pop(){
     if(Top == NULL){
         printf("Stack is empty!\n");
     }
     stack *newStack = Top->next;
-    char data = Top->data;
+    int data = Top->data;
     free(Top);
     Top = newStack;
     return data;
 }
 
-char top(){
+int top(){
     return Top->data;
 }
 
