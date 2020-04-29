@@ -56,8 +56,8 @@ void evaluatePostfix(char *str){
             case '+':
             case '-':
             case '/':
-               op1 = pop();
                op2 = pop();
+               op1 = pop();
                result = perform(str[i], op1, op2); 
                push(result + '0');
                break;
