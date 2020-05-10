@@ -7,6 +7,14 @@ typedef struct bst{
     struct bst *right;
 }bst;
 
+typedef struct queue{
+    bst *data;
+    struct queue *next;
+}queue;
+
+queue *head = NULL;
+queue *tail = NULL;
+
 bst *getBstNode(int data){
     bst *newNode = (bst *) malloc(sizeof(bst));
     newNode->data = data;
@@ -60,6 +68,7 @@ int search(bst *root, int data){
     else search(root->left, data);
 }
 
+//change location of printf(data) to implement pre-order in-order and post-order
 void print_bst(bst *root){
     if(root == NULL)
         return;
@@ -73,6 +82,14 @@ bst *findMin(bst *root){
     return root;
 }
 
+int findHeight(bst *root){
+    if(root == NULL) return -1;
+    int leftHeight = findHeight(root->left);
+    int rightHeight = findHeight(root->right);
+    return (rightHeight > leftHeight ? rightHeight : leftHeight) + 1;
+}
+
+//deletion of a node in binary search tree
 bst *delete(bst *root, int data){
      if(root == NULL) return root;
      else if(data < root->data) root->left = delete(root->left, data);
@@ -96,27 +113,74 @@ bst *delete(bst *root, int data){
          }
      }
      return root;
-    
+}
+
+void enqueue(bst *data){
+    queue *newNode = (queue *) malloc(sizeof(queue));
+    newNode->data = data;
+    newNode->next = NULL;
+    if(head == NULL && tail == NULL){
+        head = tail = newNode;
+        return;
+    }
+    tail->next = newNode;
+    tail = newNode;
+}
+
+bst *dequeue(){
+    queue *temp = head;
+    bst *data = head->data;
+    if(head == NULL){
+        return data;
+    }
+    if(head == tail) head = tail = NULL;
+    else head = head->next;
+    free(temp);
+    return data;
+}
+
+int isEmpty(){ 
+    return (head == NULL);
+}
+
+bst *top(){
+    if(!isEmpty()) return head->data;
+}
+
+
+void levelOrder(bst *root){
+    if(root == NULL) return;
+    enqueue(root);
+    while(!isEmpty()){
+        bst *current = top();
+        printf("%d ", current->data);
+        if(current->left != NULL) enqueue(current->left);
+        if(current->right != NULL) enqueue(current->right);
+        dequeue();
+    }
 }
 
 
 int main(){
     bst *root = NULL;
+
     root = insertBstNode(root, 5);
-    root = insertBstNode(root, 1);
-    root = insertBstNode(root, 2);
     root = insertBstNode(root, 3);
     root = insertBstNode(root, 4);
-    root = insertBstNode(root, 6);
-    root = insertBstNode(root, 7);
+    root = insertBstNode(root, 1);
+    root = insertBstNode(root, 2);
     root = insertBstNode(root, 8);
+    root = insertBstNode(root, 7);
     root = insertBstNode(root, 9);
     root = insertBstNode(root, 10);
+    root = insertBstNode(root, 6);
     print_bst(root);
     printf("\n");
     if(search(root, 10)) printf("Found!\n");
     else printf("Not Found!\n");
-    root = delete(root, 5);
     print_bst(root);
-
+    printf("\n");
+    printf("Height: %d\n", findHeight(root));
+    levelOrder(root);
+    printf("\n");
 }

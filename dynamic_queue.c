@@ -13,7 +13,7 @@ void enqueue(int data){
     queue *newData = (queue *) malloc(sizeof(queue));
     newData->data = data;
     newData->next = NULL;
-    if(front == NULL & rear == NULL){
+    if(front == NULL && rear == NULL){
         front = rear = newData;
         return;
     }
